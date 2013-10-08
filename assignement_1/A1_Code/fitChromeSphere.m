@@ -16,15 +16,16 @@ function [L] = fitChromeSphere(chromeDir, nDir, chatty)
     chatty = false;
   end
     
-  mask = ppmRead([chromeDir, 'chrome.mask.ppm']);
+  mask = imread([chromeDir, 'chrome.mask.png']);
   mask = mask(:,:,1) / 255.0;
 
   for n=1:nDir
-    fname = [chromeDir,'chrome.',num2str(n-1),'.ppm'];
-    im = ppmRead(fname);
+    fname = [chromeDir,'chrome.',num2str(n-1),'.png'];
+    im = imread(fname);
     imData(:,:,n) = im(:,:,1);           % red channel
   end
 
+  size(imData)
   % YOU NEED TO COMPLETE THIS FUNCTION
 
   return;
