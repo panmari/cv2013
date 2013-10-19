@@ -26,10 +26,6 @@ function [L] = fitChromeSphere(chromeDir, nDir, chatty)
   end
   [xmax, ymax, nr_images] = size(imData);
   
-  %% computes centroid of bright spot
-  for img_nr=1:nr_images
-    bright_spots(:, :, img_nr) = getCentroid(imData(:,:,img_nr), mask); % fix inversion on y axis
-  end
   %% compute center and radius of sphere
   sphere_center = getCentroid(mask, ones(xmax, ymax), 0);
   sphere_min = [10000, 10000];
@@ -53,10 +49,16 @@ function [L] = fitChromeSphere(chromeDir, nDir, chatty)
     end
   end
   diameter_xy = sphere_min - sphere_max;
-  radius_xy = diameter_xy/2;
-  
-  % YOU NEED TO COMPLETE THIS FUNCTION
-  L = bright_spots; 
+  radius = mean(diameter_xy/2);
+  %% Every point on sphere must satisfy r^2 = x^2 + y^2 + z^2, use this to 
+  % compute z coordinate, take negative one bc we know camera is in
+  % negative z direction
+  for img_nr=1:nr_images
+    bright_spot = getCentroid(imData(:,:,img_nr), mask); % fix inversion on y axis
+    xy_sphere = bright_spot - sphere_center;
+    xyz_sphere = [xy_sphere, -sqrt(radius^2 - xy_sphere(1)^2 - xy_sphere(2)^2)];
+    L(:,img_nr) = xyz_sphere/radius; % todo: possibly normalize instead of dividing by radius
+  end
 end
 
 %% Returns the centroid of the bright blob inside the image
