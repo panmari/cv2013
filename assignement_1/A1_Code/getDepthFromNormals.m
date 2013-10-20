@@ -13,7 +13,6 @@ function [depth] = getDepthFromNormals(n, mask)
   %
   [x_max, y_max, ~] = size(mask);
   v = [];
-  % initial constraint, Z(x_0, y_0) = 0
   i = [];
   j = [];
   s = [];
@@ -40,7 +39,12 @@ function [depth] = getDepthFromNormals(n, mask)
           end
       end
   end
-  A = sparse(j,i,s, 2*x_max*y_max, x_max*y_max);
+  % random extra constrain  Z(x_0, y_0) = 0
+  j = [j, row_idx];
+  i = [i, indexInRow(x_max/2, y_max/2, y_max)];
+  s = [s, 1];
+  v = [v; 0];
+  A = sparse(j,i,s, 2*x_max*y_max + 1, x_max*y_max);
   x = A\v;
   depth = reshape(x, x_max, y_max, 1);
 end
