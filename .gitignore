@@ -1,2 +1,8 @@
 *.m~
 *.tmp
+.DS_Store
+
+# latex
+*.log
+*.aux
+*.gz
