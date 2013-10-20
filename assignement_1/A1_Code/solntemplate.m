@@ -26,7 +26,7 @@ end
 % todo: use masks?
 [n, albedo] = fitReflectance(imLuminances, L);
 
-%% TODO: compute albedo of all color channels by using normal
+%% compute albedo of all color channels by using normal
 [x_max, y_max, ndir, ~] = size(imData);
 color_albedo = zeros(x_max, y_max, 3);
 parfor x=1:x_max
@@ -41,8 +41,13 @@ parfor x=1:x_max
     end
 end
 
+%% compute depth using normals
+depthmap = getDepthFromNormals(n, mask);
+
+%% stops timer
 toc
 
+%% show of stuff
 subplot(2,2,1), imshow((n+1)/2)
 subplot(2,2,2), imshow(albedo/max(max(albedo)));
 subplot(2,2,3), imshow(color_albedo/255)
