@@ -1,4 +1,4 @@
-%% Main script file to run the algorith
+%% Main script file to run the algorithm
 
 clear all;
 close all;
@@ -10,7 +10,7 @@ nDir = 12;
 method = 1; % computed light directions from chrome sphere
 L = getLightDir(method,'../Images/chrome/', nDir, true);
 
-img_name = 'buddha';
+img_name = 'cat';
 img_folder = ['../Images/', img_name, '/'];
 mask = imread([img_folder, img_name, '.mask.png']);
 mask = mask(:,:,1) / 255.0;
@@ -48,18 +48,19 @@ depthmap = getDepthFromNormals(n, mask);
 toc
 
 %% show of stuff
-subplot(2,2,1), imshow((n+1)/2)
+%subplot(2,2,1), imshow((n+1)/2)
+subplot(2,2,1), imshow(abs(n));
 subplot(2,2,2), imshow(albedo/max(max(albedo)));
-subplot(2,2,3), imshow(color_albedo/255)
-subplot(2,2,4), imshow((depthmap - mean(mean(depthmap)))/std(std(depthmap)))
+subplot(2,2,3), imshow(color_albedo/255);
+subplot(2,2,4), imshow((depthmap - mean(mean(depthmap)))/std(std(depthmap)));
 
 %% create latex table of light
 latex_lights = '';
 row = 0;
 for l=reshape(L, 1, [])
-    latex_lights = [latex_lights, num2str(l), ' & '];
+    latex_lights = [latex_lights, sprintf('%0.4f',l), ' & '];
     row = row + 1;
-    if mod(row, 12) == 0
+    if mod(row, 3) == 0
         latex_lights = [latex_lights(1:(length(latex_lights)-2)), '\\ '];
     end
 end
