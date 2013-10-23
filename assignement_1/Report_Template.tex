@@ -57,21 +57,46 @@
 
 \section{Photometric Stereo (Due on 29/10/2013)}
 
+\subsection{Calibration}
+In this chapter I describe, how the light directions can be retrieved by 
+inspecting the specular reflection of a sphere.
 
-
-\paragraph{1. Calibration (35 points)}
-In this section you should:
-
+\subsubsection{Calculating the light direction} 
+We know, that every point on the sphere must satisfy
+\begin{equation*}
+	r^2 = x^2 + y^2 + z^2
+\end{equation*}
+for the cartesian representation of a sphere as $(x,y,z)^T$ with the radius $r$. We can deploy this constraint, by bringing the bright
+ highlight into the sphere coordinate system. This is simply done 
+ by subtracting the center of the sphere. The variables used in eq. \ref{eq:light_direction} are:
 \begin{itemize}
-\item Describe the algorithm you used for calculating the light directions given the images of the chrome sphere for different lighting conditions. You need to provide the formula you used to calculate such directions given: 1) The radius of the sphere; 2) The 2D coordinates of the light source highlights on the sphere; 3) The 2D coordinates of the centre of the sphere; 4) The unit vector $(0,0,-1)$ that points towards the camera.
+\item The 2D coordinates of the light source $i$'s highlight on the sphere $p_i$, computed as centroid of all points above a certain brightness threshold
+\item The 2D coordinates of the centre of the sphere $c$, computed as the centroid of the mask.
+\end{itemize}
+\begin{equation}
+	L_i = 
+	\left[ 
+	\begin{array}{c}
+	(p_i - c)_x \\
+	(p_i - c)_y \\
+	-\sqrt{r^2 - (p_i - c)_x^2 - (p_i - c)_y^2}
+\end{array} 
+\right] 
+\label{eq:light_direction}
+\end{equation}
+We take the negative solution of the square root, because we know that the z coordinate will be pointing towards the camera.
+\begin{itemize}
+
 \item The calculated light vector in the format:
 
-\begin{align}
-\mathbf{L}= \left[ \begin{array}{cccccccccccccc}
--0.0123 & -0.123 & 0.0123123213 & L_{3x} & L_{4x} & L_{5x} & L_{6x} & L_{7x} & L_{8x} & L_{9x} & L_{10x} & L_{11x} & L_{12z}\\ L_{1y} & L_{2y} & L_{3y} & L_{4y} & L_{5y} & L_{6y} & L_{7y} & L_{8y} & L_{9y} & L_{10y} & L_{11y} & L_{12y}\\
-L_{1z} & L_{2z} & L_{3z} & L_{4z} & L_{5z} & L_{6z} & L_{7z} & L_{8z} & L_{9z} & L_{10z} & L_{11z} & L_{12z}
-\end{array} \right] \nonumber
-\end{align}
+\begin{align*}
+\mathbf{L}^T= 
+\left[ 
+\begin{array}{cccccccccccccc}
+-0.2241 & 0.2389 & -0.9448 \\ -0.0619 & 0.1099 & -0.9920 \\ -0.0788 & -0.0183 & -0.9967 \\ -0.2042 & -0.0441 & -0.9779 \\ -0.2394 & -0.1511 & -0.9591 \\ -0.2637 & -0.0525 & -0.9632 \\ -0.1960 & 0.1302 & -0.9719 \\ -0.1987 & 0.0468 & -0.9789 \\ -0.1534 & 0.0951 & -0.9836 \\ -0.1510 & 0.0403 & -0.9877 \\ -0.0212 & 0.0582 & -0.9981 \\ -0.1650 & -0.0654 & -0.9841 \\  
+\end{array} 
+\right] 
+\end{align*}
 \end{itemize}
 
 
@@ -83,7 +108,7 @@ In this section you should:
 \item Describe the algorithm you used for calculating the albedo and normals given the light directions you estimated (or the approximated one which is provided in case you did not complete the task 1). You need to provide the formula you used to calculate the normals.
 
 \item Display the image of the recovered albedo map for each dataset.
-\item Display the images of the three normal components (x,y and z directions) or a single colour image with the x,y and z components instead of the R,G, and B components rispectively.
+\item Display the images of the three normal components (x,y and z directions) or a single colour image with the x,y and z components instead of the R,G, and B components respectively.
 \item Display the images of the three albedo maps for each dataset. 
 \end{itemize}
 
