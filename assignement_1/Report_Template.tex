@@ -63,18 +63,19 @@ inspecting the specular reflection of a sphere.
 
 \subsubsection{Calculating the light direction} 
 We know, that every point on the sphere must satisfy
-\begin{equation*}
+\begin{equation}
 	r^2 = x^2 + y^2 + z^2
-\end{equation*}
+\label{eq:sphere_coord}
+\end{equation}
 for the cartesian representation of a sphere as $(x,y,z)^T$ with the radius $r$. We can deploy this constraint, by bringing the bright
  highlight into the sphere coordinate system. This is simply done 
  by subtracting the center of the sphere. The variables used in eq. \ref{eq:light_direction} are:
 \begin{itemize}
-\item The 2D coordinates of the light source $i$'s highlight on the sphere $p_i$, computed as centroid of all points above a certain brightness threshold
+\item The 2D coordinates of the light source $i$'s highlight on the sphere, named $p_i$. It is computed as centroid of all points above a certain brightness threshold
 \item The 2D coordinates of the centre of the sphere $c$, computed as the centroid of the mask.
 \end{itemize}
 \begin{equation}
-	L_i = 
+	n_i = 
 	\left[ 
 	\begin{array}{c}
 	(p_i - c)_x \\
@@ -84,11 +85,16 @@ for the cartesian representation of a sphere as $(x,y,z)^T$ with the radius $r$.
 \right] 
 \label{eq:light_direction}
 \end{equation}
-We take the negative solution of the square root, because we know that the z coordinate will be pointing towards the camera.
-\begin{itemize}
+For the z coordinate, eq. \ref{eq:sphere_coord} can be solved for z. The negative solution is the correct choice, since it is the one pointing towards the camera.
 
-\item The calculated light vector in the format:
+Once the normal at the lights highlight are retrieved, they can be used with ray reflection to get the direction towards the light
+\begin{equation}
+	L_i = d - 2(d\cdot \hat{n}_i)\hat{n}_i
+\end{equation}
+with $\hat{n}_i$ being the normalized vector $n_i$.
 
+All light directions $L_i$ can be assembled into a matrix $\mathbf{L}$. Here the
+transposed version is shown, since it is easier to fit on a page.
 \begin{align*}
 \mathbf{L}^T= 
 \left[ 
@@ -97,7 +103,6 @@ We take the negative solution of the square root, because we know that the z coo
 \end{array} 
 \right] 
 \end{align*}
-\end{itemize}
 
 
 \paragraph{2. Computing Surface Normals and Grey Albedo (30 points)}

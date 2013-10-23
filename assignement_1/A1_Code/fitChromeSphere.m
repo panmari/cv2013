@@ -53,18 +53,23 @@ function [L] = fitChromeSphere(chromeDir, nDir, chatty)
   %% Every point on sphere must satisfy r^2 = x^2 + y^2 + z^2, use this to 
   % compute z coordinate, take negative one bc we know camera is in
   % negative z direction
+  L = zeros(3, nr_images);
+  camera_direction = [0,0,1];
   for img_nr=1:nr_images
     bright_spot = getCentroid(imData(:,:,img_nr), mask); % fix inversion on y axis
     xy_sphere = bright_spot - sphere_center;
-    xyz_sphere = [xy_sphere, -sqrt(radius^2 - xy_sphere(1)^2 - xy_sphere(2)^2)];
-    L(:,img_nr) = xyz_sphere/radius; % todo: possibly normalize instead of dividing by radius
+    n_sphere = [xy_sphere, -sqrt(radius^2 - xy_sphere(1)^2 - xy_sphere(2)^2)];
+    n_sphere = n_sphere/radius; % normalizes
+    cos_inc_angle = n_sphere*camera_direction';
+    % do I have to move this back into another coordinate system?
+    L(:,img_nr) = camera_direction - n_sphere*cos_inc_angle*2;
   end
 end
 
 %% Returns the centroid of the bright blob inside the image
 function centroid = getCentroid(img, mask, threshold)
   if nargin < 3
-    threshold = 240;  
+    threshold = 250;  
   end
   [xmax, ymax] = size(img);
   weights_sum = 0;
