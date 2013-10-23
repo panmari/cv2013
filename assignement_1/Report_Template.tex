@@ -91,7 +91,9 @@ Once the normal at the lights highlight are retrieved, they can be used with ray
 \begin{equation}
 	L_i = d - 2(d\cdot \hat{n}_i)\hat{n}_i
 \end{equation}
-with $\hat{n}_i$ being the normalized vector $n_i$.
+with $\hat{n}_i$ being the normalized vector of $n_i$ and $d$ the direction of a light ray from the camera towards the sphere.
+The assumption given in the assignment is, 
+that $d = (0,0,1)$ for every point of the image.
 
 All light directions $L_i$ can be assembled into a matrix $\mathbf{L}$. Here the
 transposed version is shown, since it is easier to fit on a page.

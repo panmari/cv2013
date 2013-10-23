@@ -5,9 +5,7 @@ close all;
 tic
 nDir = 12;
 
-% Put your code here
-%method = 0; % default light directions
-method = 1; % computed light directions from chrome sphere
+method = 1; % 1 for computed light directions from chrome sphere, 0 for default
 L = getLightDir(method,'../Images/chrome/', nDir, true);
 
 img_name = 'cat';
@@ -49,6 +47,7 @@ toc
 
 %% show of stuff
 %subplot(2,2,1), imshow((n+1)/2)
+figure
 subplot(2,2,1), imshow(abs(n));
 subplot(2,2,2), imshow(albedo/max(max(albedo)));
 subplot(2,2,3), imshow(color_albedo/255);

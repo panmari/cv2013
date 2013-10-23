@@ -54,15 +54,15 @@ function [L] = fitChromeSphere(chromeDir, nDir, chatty)
   % compute z coordinate, take negative one bc we know camera is in
   % negative z direction
   L = zeros(3, nr_images);
-  camera_direction = [0,0,1];
+  ray_from_camera = [0,0,1];
   for img_nr=1:nr_images
-    bright_spot = getCentroid(imData(:,:,img_nr), mask); % fix inversion on y axis
+    bright_spot = getCentroid(imData(:,:,img_nr), mask); 
     xy_sphere = bright_spot - sphere_center;
-    n_sphere = [xy_sphere, -sqrt(radius^2 - xy_sphere(1)^2 - xy_sphere(2)^2)];
+    n_sphere = [xy_sphere, -sqrt(radius^2 - sum(xy_sphere.^2))];
     n_sphere = n_sphere/radius; % normalizes
-    cos_inc_angle = n_sphere*camera_direction';
+    cos_inc_angle = dot(n_sphere, ray_from_camera);
     % do I have to move this back into another coordinate system?
-    L(:,img_nr) = camera_direction - n_sphere*cos_inc_angle*2;
+    L(:,img_nr) = ray_from_camera - (cos_inc_angle*2)*n_sphere;
   end
 end
 
