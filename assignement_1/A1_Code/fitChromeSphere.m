@@ -85,6 +85,6 @@ function centroid = getCentroid(img, mask, threshold)
          weights_sum = weights_sum + weight;
       end
   end
-  centroid = bright_spot/weights_sum;
+  centroid = [bright_spot(2), bright_spot(1)]/weights_sum;
 end
 
