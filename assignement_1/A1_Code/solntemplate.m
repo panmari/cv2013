@@ -1,6 +1,6 @@
 %% Main script file to run the algorithm
 
-clear all;
+%clear all;
 close all;
 tic
 nDir = 12;
@@ -51,7 +51,8 @@ figure
 subplot(2,2,1), imshow(abs(n));
 subplot(2,2,2), imshow(albedo/max(max(albedo)));
 subplot(2,2,3), imshow(color_albedo/255);
-subplot(2,2,4), imshow((depthmap - mean(mean(depthmap)))/std(std(depthmap)));
+positive_depthmap = depthmap + abs(min(min(depthmap)));
+subplot(2,2,4), imshow(positive_depthmap/max(max(positive_depthmap)));
 
 %% create latex table of light
 latex_lights = '';
