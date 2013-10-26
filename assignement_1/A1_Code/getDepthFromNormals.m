@@ -47,7 +47,8 @@ function [depth] = getDepthFromNormals(n, mask)
               s = [s, n(x,y,3), - n(x,y,3)];
               row_idx = row_idx + 1;
               
-              v = [v; -n(x,y,1); -n(x,y,2)];
+              % careful, iterating like this inverts x,y direction
+              v = [v; -n(x,y,2); -n(x,y,1)];
            end
       end
   end

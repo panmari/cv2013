@@ -106,9 +106,9 @@ They are fairly close to the defaults given. The mean squared error over all nor
 
 For computing the grayscale albedo, I first reduced the color information to a single channel by computing the luminance $\ell$
 \begin{equation}
-	\ell = c_\text{red} \cdot 0.299 + 
-		c_\text{green} \cdot 0.587 + 
-		c_\text{blue} \cdot 0.114
+	\ell = c_\text{r} \cdot 0.299 + 
+		c_\text{g} \cdot 0.587 + 
+		c_\text{b} \cdot 0.114
 \end{equation}
 for each image. 
 
@@ -126,7 +126,7 @@ with
 	having the light direction of the corresponding image.
 	\item $\tilde{n}$ the normal direction (not unit size)
 \end{itemize}
-Further, we know that we can obtain the grayscale albedo $\rho$ by taking the length of $\tilde{n}$
+We know that we can obtain the grayscale albedo $\rho$ by taking the length of $\tilde{n}$
 \begin{equation}
 	n = \frac{\tilde{n}}{\rho}
 \end{equation}
@@ -231,38 +231,61 @@ on every pixel.
 
 \subsection{Surface Fitting}
 
-First, we need to express the surface as function of the normal. For this, we define the surface tangent
-vector at any point as
+We are looking for a way, to express the surface depth as function of the normal. The surface $S$ can be defined as with the depth as function of the other 
+coordinates, as in $S(X,Y)=(X,Y,Z(X,Y))^T$. Next, we define the surface tangent
+vectors in $X, Y$ direction at any point as partial derivatives
 \begin{equation}
 \begin{aligned}
 	\textbf{t}_X &= \frac{\partial\textbf{S}}{\partial X} = (1, 0, Z_X)^T \\
 	\textbf{t}_Y &= \frac{\partial\textbf{S}}{\partial Y} = (1, 0, Z_Y)^T
 \end{aligned}
+\label{eq:tangents}
 \end{equation}
 Since the normal can be expressed as normalized cross product of two tangential vectors, we know that
 \begin{equation}
-	n(X,Y) = \frac{(Z_X, Z_Y, -1)^T}{||(Z_X, Z_Y, -1)||}
+\begin{aligned}
+	n(X,Y) &= \frac{\textbf{t}_X \times \textbf{t}_Y}
+					{||\textbf{t}_X \times \textbf{t}_Y||} \\
+		   &= \frac{(Z_X, Z_Y, -1)^T}{||(Z_X, Z_Y, -1)||}
+\end{aligned}
 \end{equation}
-Further, the unknown depths can be approximated by
+Further, the derivatives of the unknown depths can be approximated by
 \begin{equation}
 \begin{aligned}
 	Z_X &\approx Z(x + 1, y) - Z(x,y) \\
-	Z_X &\approx Z(x, y + 1) - Z(x,y)	
+	Z_Y &\approx Z(x, y + 1) - Z(x,y)	
 \end{aligned}
 \label{eq:approx}
 \end{equation}
-Since we know, that the normal and the tangent vector are perpendicular to each other, we can
+These approximations can be used to express the tangent vectors 
+defined in eq. \ref{eq:tangents}. Since we know, that the normal and the tangent vector are perpendicular to each other, we can
 formulate the constraint
 \begin{equation}
 \begin{aligned}
-	\textbf{t}_X(x,y) \cdot n(X,Y) = 0 \\
-	\textbf{t}_Y(x,y) \cdot n(X,Y) = 0
+	\textbf{t}_X(x,y) \cdot n(x,y) = 0 \\
+	\textbf{t}_Y(x,y) \cdot n(x,y) = 0
+\end{aligned}
+\end{equation}
+This can be transformed to
+\begin{equation}
+\begin{aligned}
+	(Z(x+1,y) - Z(x,y)) \cdot n(x,y)_z &= -n(x,y)_x \\
+	(Z(x,y+1) - Z(x,y)) \cdot n(x,y)_z &= -n(x,y)_y 
 \end{aligned}
 \end{equation}
 Now we have many linear equations, fill a whole matrix with this stuff, then solve.
+This reduces the space of solutions to $Z(x,y) + c$ for any constant $c$. To reduce
+it to one unique solution, an additional constraint in the form of 
+\begin{equation}
+	Z(x_0, y_0) = 0
+\end{equation}
+must be defined for a single pixel $(x_0, y_0)$. I choose to set the pixel in the top left to $Z(0,0) = 0$. An alternative I explored 
+would be to set the depth of all pixels just outside the object boarder to $0$
 \subsubsection{Results}
-Sucessful, if ..
-
+A successful reconstruction of the surface is never guaranteed, but having more images with 
+more diverse light directions is one way to optimize the result. With more images,
+the impact of self occlusion and noise is reduced. The depth map of the scenes
+given for this assignment can be seen in figure \ref{fig:depth}.
 \begin{figure}[h!]
         \centering
         \begin{subfigure}{0.3\textwidth}
@@ -288,13 +311,25 @@ Sucessful, if ..
         \begin{subfigure}{0.3\textwidth}
                 \includegraphics[width=\textwidth]{report_fig/rock_d}
         \end{subfigure}
-        \caption{The depth. Brighter colors mean closer to the camera.
+        \caption{The depth. Brighter means closer to the camera.
         The background is set to black.}
         \label{fig:depth}
 \end{figure}
 
 \subsubsection{Failure cases}
-Surface not smooth (approximation from eq. \ref{eq:approx} not right then), many sharp
-edges
+\begin{itemize}
+\item Materials are assumed to reflect light as a lambertian material would. 
+If the material does have specular highlights, this method will fail. The eye of the owl
+scene does have a visible artifacts due to this.
 
+\item Self occlusion renders
+this method difficult, since this methods does not handle shadows. This is visible around
+the neck of the cat scene.
+
+\item Inter reflection is not handled. The scenes presented in this report
+do not contain such an example.
+
+\item The surface must be sufficiently smooth, or the approximation from eq. \ref{eq:approx} will not be correct.
+Objects with many sharp edges would not give a good result.
+\end{itemize}
 \end{document}
