@@ -8,7 +8,7 @@ nDir = 12;
 method = 1; % 1 for computed light directions from chrome sphere, 0 for default
 L = getLightDir(method,'../Images/chrome/', nDir, true);
 
-img_name = 'cat';
+img_name = 'rock';
 img_folder = ['../Images/', img_name, '/'];
 mask = imread([img_folder, img_name, '.mask.png']);
 mask = mask(:,:,1) / 255.0;
@@ -46,15 +46,19 @@ depthmap = getDepthFromNormals(n, mask);
 toc
 
 %% show of stuff
-%subplot(2,2,1), imshow((n+1)/2)
 figure
+%subplot(2,2,1), imshow((n+1)/2)
 subplot(2,2,1), imshow(abs(n));
 subplot(2,2,2), imshow(albedo/max(max(albedo)));
 subplot(2,2,3), imshow(color_albedo/255);
-positive_depthmap = depthmap + abs(min(min(depthmap)));
-subplot(2,2,4), imshow(positive_depthmap/max(max(positive_depthmap)));
+depthmap_img = depthmap;
+depthmap_img(mask == 0) = 0;
+depthmap_img(mask == 1) = depthmap(mask == 1) + abs(min(min(depthmap(mask == 1))));
+depthmap_img(mask == 1) = depthmap_img(mask == 1)/max(max(depthmap_img));
+depthmap_img(mask == 1) = 1 - depthmap_img(mask == 1); % invert to have dark colors far away
+subplot(2,2,4), imshow(depthmap_img);
 
-%% create latex table of light
+%% create latex matrix of light directions
 latex_lights = '';
 row = 0;
 for l=reshape(L, 1, [])

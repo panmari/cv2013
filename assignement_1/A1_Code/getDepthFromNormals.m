@@ -21,7 +21,19 @@ function [depth] = getDepthFromNormals(n, mask)
   %zy = convmtx2([1; -1], x_max, y_max)*n;
   for y=1:y_max
       for x=1:x_max
-          if mask(x,y) == 1
+          if mask(x,y) == 0
+              try 
+                  if (mask(x+1,y) || mask(x, y+1) || mask(x-1, y) || mask(x, y-1))
+                      j = [j, row_idx];
+                      i = [i, indexInRow(x, y, x_max)];
+                      s = [s, 1];
+                      v = [v; 0];
+                      row_idx = row_idx + 1;
+                  end
+              catch err
+                  % don't care at boarder
+              end
+           else
               % constrain tangent x direction
               j = [j,row_idx, row_idx];
               i = [i, indexInRow(x + 1, y, x_max), indexInRow(x, y, x_max)];
@@ -35,7 +47,7 @@ function [depth] = getDepthFromNormals(n, mask)
               row_idx = row_idx + 1;
               
               v = [v; -n(x,y,1); -n(x,y,2)];
-          end
+           end
       end
   end
 
