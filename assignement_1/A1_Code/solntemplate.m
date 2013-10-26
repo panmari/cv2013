@@ -7,7 +7,8 @@ nDir = 12;
 
 method = 1; % 1 for computed light directions from chrome sphere, 0 for default
 L = getLightDir(method,'../Images/chrome/', nDir, true);
-scene_names = {'rock', 'buddha', 'owl', 'horse', 'cat', 'gray'};  
+%scene_names = {'rock', 'buddha', 'owl', 'horse', 'cat', 'gray'};  
+scene_names = {'horse'};
 for img_name_str = scene_names;
     img_name = char(img_name_str);
     img_folder = ['../Images/', img_name, '/'];
@@ -57,17 +58,18 @@ for img_name_str = scene_names;
     subplot(2,2,2), imshow(img_albedo);
     img_color_albedo = color_albedo/255;
     subplot(2,2,3), imshow(img_color_albedo);
-    imwrite(img_n, [img_name, '_n.png'])
-    imwrite(img_albedo, [img_name, '_a.png'])
-    imwrite(img_color_albedo, [img_name, '_ca.png'])
+    imwrite(img_n, [img_name, '_n.png']);
+    imwrite(img_albedo, [img_name, '_a.png']);
+    imwrite(img_color_albedo, [img_name, '_ca.png']);
 
     %% show depthmap
     depthmap_img = depthmap;
     depthmap_img(mask == 0) = 0;
     depthmap_img(mask == 1) = depthmap(mask == 1) + abs(min(min(depthmap(mask == 1))));
-    depthmap_img(mask == 1) = depthmap_img(mask == 1)/max(max(depthmap_img));
-    depthmap_img(mask == 1) = 1 - depthmap_img(mask == 1); % invert to have dark colors far away
+    depthmap_img(mask == 1) = depthmap_img(mask == 1)/max(max(depthmap_img(mask == 1)));
+    %depthmap_img(mask == 1) = 1 - depthmap_img(mask == 1); % invert to have dark colors far away
     subplot(2,2,4), imshow(depthmap_img);
+    imwrite(depthmap_img, [img_name, '_d.png']);
 end
 %% create latex matrix of light directions
 latex_lights = '';

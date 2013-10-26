@@ -22,17 +22,18 @@ function [depth] = getDepthFromNormals(n, mask)
   for y=1:y_max
       for x=1:x_max
           if mask(x,y) == 0
-              try 
-                  if (mask(x+1,y) || mask(x, y+1) || mask(x-1, y) || mask(x, y-1))
-                      j = [j, row_idx];
-                      i = [i, indexInRow(x, y, x_max)];
-                      s = [s, 1];
-                      v = [v; 0];
-                      row_idx = row_idx + 1;
-                  end
-              catch err
-                  % don't care at boarder
-              end
+              % alternative constraint: set boarder around object to zero
+%               try 
+%                   if (mask(x+1,y) || mask(x, y+1) || mask(x-1, y) || mask(x, y-1))
+%                       j = [j, row_idx];
+%                       i = [i, indexInRow(x, y, x_max)];
+%                       s = [s, 1];
+%                       v = [v; 0];
+%                       row_idx = row_idx + 1;
+%                   end
+%               catch err
+%                   % don't care at boarder
+%               end
            else
               % constrain tangent x direction
               j = [j,row_idx, row_idx];
@@ -50,7 +51,11 @@ function [depth] = getDepthFromNormals(n, mask)
            end
       end
   end
-
+  % additional constraint: set pixel at top left to zero depth
+  j = [j, row_idx];
+  i = [i, indexInRow(1, 1, x_max)];
+  s = [s, 1];
+  v = [v; 0];
   A = sparse(j,i,s, max(j), x_max*y_max);
   xVec = A\v;
   depth = reshape(xVec, [x_max, y_max, 1]);

@@ -46,23 +46,16 @@
 
 \maketitle
 
-
-% Add figures:
-%\begin{figure}[t]
-%%\begin{center}
-%\quad\quad   \includegraphics[width=1\linewidth]{ass2}
-%%\end{center}
-%
-%\label{fig:performance}
-%\end{figure}
-
 \section{Photometric Stereo (Due on 29/10/2013)}
 
-\subsection{Calibration}
-In this chapter I describe, how the light directions can be retrieved by 
-inspecting the specular reflection of a sphere.
+In this assignment, we first retrieve the light directions of twelve images
+of a chrome sphere. Then we use these light directions to compute the
+normals, albedo and depth of 12 images of a scene that were taken under the
+same lighting conditions. We assume, the chrome sphere does specular
+ reflection, while the other scenes only do diffuse reflection (as
+lambertian materials).
 
-\subsubsection{Calculating the light direction} 
+\subsection{Calculating the light direction} 
 We know, that every point on the sphere must satisfy
 \begin{equation}
 	r^2 = x^2 + y^2 + z^2
@@ -96,7 +89,6 @@ with $\hat{n}_i$ being the normalized vector of $n_i$ and $d$ the direction of a
 The assumption given in the assignment is, 
 that every ray originating from the camera has direction $d = (0,0,1)$ for every point of the image.
 
-\subsubsection{Results}
 All light directions $L_i$ can be assembled into a matrix $\mathbf{L}$. Here the
 transposed version is shown, since it is easier to fit on a page.
 \begin{align*}
@@ -111,7 +103,6 @@ They are fairly close to the defaults given. The mean squared error over all nor
 
 \subsection{Computing Surface Normals and Grey Albedo}
 
-\subsubsection{Calculations}
 
 For computing the grayscale albedo, I first reduced the color information to a single channel by computing the luminance $\ell$
 \begin{equation}
@@ -134,7 +125,6 @@ with
 	\item $S$ a matrix of all light directions, with each row
 	having the light direction of the corresponding image.
 	\item $\tilde{n}$ the normal direction (not unit size)
-	
 \end{itemize}
 Further, we know that we can obtain the grayscale albedo $\rho$ by taking the length of $\tilde{n}$
 \begin{equation}
@@ -147,7 +137,6 @@ Once we know the normals, we can use them to compute the color albedo $a$, using
 \end{align*}
 on every pixel.
 
-\subsubsection{Results}
 \begin{figure}[h!]
         \centering
         \begin{subfigure}{0.3\textwidth}
@@ -174,7 +163,9 @@ on every pixel.
                 \includegraphics[width=\textwidth]{report_fig/rock_n}
         \end{subfigure}
         \caption{The normals visualized for every scene. For transforming
-         them into rgb range, I took the absolute value. The background 
+         them into rgb range, I took the absolute value. The x-axis
+         is pointing to the right, the y-axis up and the z-axis towards
+         the reader. The background 
          (where the mask is zero) is shown black. }
         \label{fig:normals}
 \end{figure}
@@ -233,33 +224,77 @@ on every pixel.
                 \includegraphics[width=\textwidth]{report_fig/rock_ca}
         \end{subfigure}
         \caption{The color albedo. The buddha, sphere and horse
-        do in fact have a moreover gray albedo, so there is not too much
+        do in fact have a gray albedo, so there is not too much
         of a difference to the grayscale albedo.}
         \label{fig:color_albedo}
 \end{figure}
 
 \subsection{Surface Fitting}
 
-In this section you should:
+First, we need to express the surface as function of the normal. For this, we define the surface tangent
+vector at any point as
+\begin{equation}
+\begin{aligned}
+	\textbf{t}_X &= \frac{\partial\textbf{S}}{\partial X} = (1, 0, Z_X)^T \\
+	\textbf{t}_Y &= \frac{\partial\textbf{S}}{\partial Y} = (1, 0, Z_Y)^T
+\end{aligned}
+\end{equation}
+Since the normal can be expressed as normalized cross product of two tangential vectors, we know that
+\begin{equation}
+	n(X,Y) = \frac{(Z_X, Z_Y, -1)^T}{||(Z_X, Z_Y, -1)||}
+\end{equation}
+Further, the unknown depths can be approximated by
+\begin{equation}
+\begin{aligned}
+	Z_X &\approx Z(x + 1, y) - Z(x,y) \\
+	Z_X &\approx Z(x, y + 1) - Z(x,y)	
+\end{aligned}
+\label{eq:approx}
+\end{equation}
+Since we know, that the normal and the tangent vector are perpendicular to each other, we can
+formulate the constraint
+\begin{equation}
+\begin{aligned}
+	\textbf{t}_X(x,y) \cdot n(X,Y) = 0 \\
+	\textbf{t}_Y(x,y) \cdot n(X,Y) = 0
+\end{aligned}
+\end{equation}
+Now we have many linear equations, fill a whole matrix with this stuff, then solve.
+\subsubsection{Results}
+Sucessful, if ..
 
-\begin{itemize}
-\item Describe the algorithm you used for calculating the depth map given the normals you calculated before.
-\item Display the image of the depth map (in colour or grayscale) for each dataset, where higher intensity values indicate points closer to the camera.
-\item Describe, in no more than a few paragraphs, your assessment of when the technique works well, and when there are failures. When the technique fails to produce nice results, please explain as best as you can what the likely causes of the problems are.
-\end{itemize}
+\begin{figure}[h!]
+        \centering
+        \begin{subfigure}{0.3\textwidth}
+                \includegraphics[width=\textwidth]{report_fig/buddha_d}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}{0.3\textwidth}
+                \includegraphics[width=\textwidth]{report_fig/cat_d}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}{0.3\textwidth}
+                \includegraphics[width=\textwidth]{report_fig/gray_d}
+        \end{subfigure}
+        % second row
+        \begin{subfigure}{0.3\textwidth}
+                \includegraphics[width=\textwidth]{report_fig/horse_d}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}{0.3\textwidth}
+                \includegraphics[width=\textwidth]{report_fig/owl_d}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}{0.3\textwidth}
+                \includegraphics[width=\textwidth]{report_fig/rock_d}
+        \end{subfigure}
+        \caption{The depth. Brighter colors mean closer to the camera.
+        The background is set to black.}
+        \label{fig:depth}
+\end{figure}
 
+\subsubsection{Failure cases}
+Surface not smooth (approximation from eq. \ref{eq:approx} not right then), many sharp
+edges
 
-
-
-
-
-
-
-
-
-
-
-
-
-
- \end{document}
+\end{document}
