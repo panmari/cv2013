@@ -50,10 +50,10 @@
 
 In this assignment, we first retrieve the light directions of twelve images
 of a chrome sphere. Then we use these light directions to compute the
-normals, albedo and depth of 12 images of a scene that were taken under the
-same lighting conditions. We assume, the chrome sphere does specular
+normals, albedo and depth of a scene using twelve images that were taken under the
+same lighting conditions as measured before. We assume, the chrome sphere does specular
  reflection, while the other scenes only do diffuse reflection (as
-lambertian materials).
+lambertian materials would).
 
 \subsection{Calculating the light direction} 
 We know, that every point on the sphere must satisfy
@@ -61,13 +61,13 @@ We know, that every point on the sphere must satisfy
 	r^2 = x^2 + y^2 + z^2
 \label{eq:sphere_coord}
 \end{equation}
-for the cartesian representation of a sphere as $(x,y,z)^T$ with the radius $r$. We can deploy this constraint, by bringing the bright
- highlight into the sphere coordinate system. This is simply done 
- by subtracting the center of the sphere. The variables used in eq. \ref{eq:light_direction} are:
-\begin{itemize}
-\item The 2D coordinates of the light source $i$'s highlight on the sphere, named $p_i$. It is computed as centroid of all points above a certain brightness threshold
-\item The 2D coordinates of the centre of the sphere $c$, computed as the centroid of the mask.
-\end{itemize}
+for the cartesian representation the surface of a sphere as $(x,y,z)^T$ 
+with the radius $r$ and origin at the center of the sphere. This enables
+ us to express the point of specular reflection in sphere coordinates. 
+For the z coordinate, eq. \ref{eq:sphere_coord} can be solved for z. 
+The negative solution is the correct choice, since it is the one pointing towards the camera. 
+Because the shape is a sphere, we also know that $n_i$ is perpendicular to the surface, ie. the normal. Putting
+ all this information into one equation, we end up with
 \begin{equation}
 	n_i = 
 	\left[ 
@@ -79,9 +79,12 @@ for the cartesian representation of a sphere as $(x,y,z)^T$ with the radius $r$.
 \right] 
 \label{eq:light_direction}
 \end{equation}
-For the z coordinate, eq. \ref{eq:sphere_coord} can be solved for z. The negative solution is the correct choice, since it is the one pointing towards the camera.
-
-Once the normal at the lights highlight are retrieved, they can be used with ray reflection to get the direction towards the light
+with
+\begin{itemize}
+\item $p_i$: The xy coordinates of the light source $i$'s highlight on the sphere. It is computed as centroid of all points above a certain brightness threshold
+\item $c$: The xy coordinates of the centre of the sphere. computed as the centroid of the mask.
+\end{itemize} 
+Once $n_i$ is retrieved, it can be used with ray reflection to get the direction towards the light
 \begin{equation}
 	L_i = d - 2(d\cdot \hat{n}_i)\hat{n}_i
 \end{equation}
@@ -112,7 +115,7 @@ For computing the grayscale albedo, I first reduced the color information to a s
 \end{equation}
 for each image. 
 
-In the lecture it was shown, that we can compute the normals by solving
+In the lecture it was shown that we can compute the normals by solving
 \begin{align*}
 	 I &= S\tilde{n} \\
 	 S^TI &= S^T\tilde{n} \\
@@ -273,14 +276,15 @@ This can be transformed to
 	(Z(x,y+1) - Z(x,y)) \cdot n(x,y)_z &= -n(x,y)_y 
 \end{aligned}
 \end{equation}
-Now we have many linear equations, fill a whole matrix with this stuff, then solve.
-This reduces the space of solutions to $Z(x,y) + c$ for any constant $c$. To reduce
+This gives us a linear system we can solve for.
+The constraints introduced so far reduce the space of 
+solutions to $Z(x,y) + c$ for any constant $c$. To reduce
 it to one unique solution, an additional constraint in the form of 
 \begin{equation}
 	Z(x_0, y_0) = 0
 \end{equation}
 must be defined for a single pixel $(x_0, y_0)$. I choose to set the pixel in the top left to $Z(0,0) = 0$. An alternative I explored 
-would be to set the depth of all pixels just outside the object boarder to $0$
+would be to set the depth of all pixels just outside the object boarder to $0$. 
 \subsubsection{Results}
 A successful reconstruction of the surface is never guaranteed, but having more images with 
 more diverse light directions is one way to optimize the result. With more images,
@@ -319,17 +323,14 @@ given for this assignment can be seen in figure \ref{fig:depth}.
 \subsubsection{Failure cases}
 \begin{itemize}
 \item Materials are assumed to reflect light as a lambertian material would. 
-If the material does have specular highlights, this method will fail. The eye of the owl
-scene does have a visible artifacts due to this.
+If the material does have specular highlights, this method will fail.
 
 \item Self occlusion renders
-this method difficult, since this methods does not handle shadows. This is visible around
-the neck of the cat scene.
+this method difficult, since this methods does not handle shadows.
 
-\item Inter reflection is not handled. The scenes presented in this report
-do not contain such an example.
+\item Inter reflection is not handled. 
 
-\item The surface must be sufficiently smooth, or the approximation from eq. \ref{eq:approx} will not be correct.
+\item The surface must be sufficiently smooth.
 Objects with many sharp edges would not give a good result.
 \end{itemize}
 \end{document}
