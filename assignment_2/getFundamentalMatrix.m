@@ -1,24 +1,9 @@
-function [ fundamental ] = getFundamentalMatrix(img_left, img_right )
+function [ fundamental ] = getFundamentalMatrix(left, right)
 %UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
-    
-    %% let user specify corresponding points
-    f = figure('name', 'Specify easy to localize points on the left image');
-    f, imshow(img_left);
-    f2 = figure('name', 'Right image');
-    f2, imshow(img_right);
-    [x_l, y_l] = getpts(f);
-    hold on
-    plot(x_l, y_l, 'or');
-    set(f, 'name', 'Done!');
-    
-    set(f2, 'name', 'Specify corresponding points to left image');
-    [x_r, y_r] = getpts(f2);
-    close(f)
-    close(f2)
-    % make them homogeneous, resulting in 3xN vectors
-    left = [x_l y_l ones(length(x_l), 1)]';
-    right = [x_r y_r ones(length(x_r), 1)]';
+%   Detailed explanation goes here  
+    % make coordinates homogeneous, resulting in 3xN vectors
+    left = [left, ones(length(left), 1)]';
+    right = [right, ones(length(right), 1)]';
     % normalize 
     norm_mat_l = getNormMat(left);
     norm_mat_r = getNormMat(right);
