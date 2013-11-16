@@ -3,7 +3,7 @@
 %\usepackage{times}
 \usepackage{epsfig}
 \usepackage{graphicx}
-\usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{amssymb}
 \usepackage{color}
 \usepackage{caption}
@@ -52,6 +52,32 @@ In this assignment, we retrieve the fundamental matrix of an image pair by using
 
 \subsection{Epipolar line estimation}
 
+\subsubsection{Normalizing points}
+
+First, the user input is turned into homogeneous coordinates by appending a 1 to every point. 
+In a further step, the centroid is removed from each point and the distance to the center normalized to two pixels. For this purpose, we construct a normalization matrix $M_l$ for the given points $l$, their centroid $c$ and their mean distance to the centroid $\overline{d}_l$ as:
+\begin{equation}
+M_l =
+\begin{pmatrix}
+	2/\overline{d}_l & 0 & -2/\overline{d}_x c_x \\
+	0 & 2/\overline{d}_l & -2/\overline{d}_x c_y \\
+	0 & 0 & 1
+\end{pmatrix}
+\end{equation}
+So when multiplying it with an arbitrary point $(x,y,1)^T$ we get
+\begin{equation}
+M_l \begin{pmatrix}
+ x \\
+ y \\
+ 1
+\end{pmatrix}
+ = \begin{pmatrix}
+ 	\frac{2x}{\overline{d}_l} - \frac{2}{\overline{d}_l}c_x \\
+ 	\frac{2y}{\overline{d}_l} - \frac{2}{\overline{d}_l}c_y \\
+ 	1
+ \end{pmatrix}
+\end{equation}
+which has exactly the desired effect described above. 
 \subsection{Model reconstruction}
 \bibliographystyle{plain}
 \bibliography{Report_2_Stefan_Moser}
