@@ -2,13 +2,13 @@ function [ fundamental ] = getFundamentalMatrix(left, right)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here  
     % make coordinates homogeneous, resulting in 3xN vectors
-    left = [left, ones(length(left), 1)]';
-    right = [right, ones(length(right), 1)]';
+    left_hom = [left, ones(length(left), 1)]';
+    right_hom = [right, ones(length(right), 1)]';
     % normalize 
-    norm_mat_l = getNormMat(left);
-    norm_mat_r = getNormMat(right);
-    normed_left = norm_mat_l*left;
-    normed_right = norm_mat_r*right;
+    norm_mat_l = getNormMat(left_hom);
+    norm_mat_r = getNormMat(right_hom);
+    normed_left = norm_mat_l*left_hom;
+    normed_right = norm_mat_r*right_hom;
     % make matrix that is equivalent to linear system of 8p slide
     %% estimate fundamental matrix using points specified
     eightPointMat = [repmat(normed_right(1,:)', 1,3) .* normed_left',...
