@@ -72,13 +72,12 @@ M_p \begin{pmatrix}
  1
 \end{pmatrix}
  = \begin{pmatrix}
- 	\frac{2x}{\overline{d}_x} - \frac{2}{\overline{d}_x}c_x \\
- 	\frac{2y}{\overline{d}_y} - \frac{2}{\overline{d}_y}c_y \\
+ 	\frac{2x}{\overline{d}} - \frac{2}{\overline{d}}c_x \\
+ 	\frac{2y}{\overline{d}} - \frac{2}{\overline{d}}c_y \\
  	1
  \end{pmatrix}
 \end{equation}
-which has exactly the desired effect described above. Points normalized in such 
-a way will be designated as $\hat{l}$
+which has exactly the desired effect described above.
 
 \subsubsection{Computing Fundamental matrix}
 For the given, normalized corresponding points from the base image (or left image in our case) $p$ and from the second (or right) image $p'$ 
@@ -101,16 +100,15 @@ with $p_i = (u_i,v_i,1)$, $p_i' = (u_i',v_i',1)$ for every pair of corresponding
 \begin{equation}
 	[U_K, D_K, V_K] = \text{svd}(K)
 \end{equation}
-From the construction of the SVD we know, that the eigenvector corresponding
- to the minimal eigenvalue (ie the last column of $V_K$) does meet all
-  requirements mentioned above. So it corresponds to our normalized
-   fundamental matrix $\hat{F}_{r3}$. To ensure rank 2, we use again SVD, 
-   discard the third (and smallest) eigenvalue and reconstruct $\hat{F}_{r2}$. 
+From the construction of the SVD we know, that the column of $V_K$ corresponding to the minimal eigenvalue (ie. the last) does meet all
+requirements mentioned above. So it corresponds to our normalized
+fundamental matrix $\hat{F}_{r3}$. To ensure rank 2 we use again SVD, 
+discard the third (and smallest) eigenvalue and reconstruct $\hat{F}_{r2}$. 
 To obtain our final fundamental matrix $F$, we remove the normalization introduced in the previous section by computing 
    \begin{equation}
-   F = M_{p'} \hat{F}_{r2} M_p
+   F = M_{p'}^ T \hat{F}_{r2} M_p
    \end{equation}
 \subsection{Model reconstruction}
-\bibliographystyle{plain}
+\bibliographystyle{simple}
 \bibliography{Report_2_Stefan_Moser}
 \end{document}
