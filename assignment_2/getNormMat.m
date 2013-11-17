@@ -5,9 +5,8 @@ function m = getNormMat(x)
     centroid = mean(x, 2);
     distances = sqrt(sum((x - repmat(centroid,1,length(x))).^2, 1));
     mean_distance = mean(distances);
-    avg_dist = sqrt(2); % desired average distance, 2 pixel in our case
+    avg_dist = 2; % desired average distance, 2 pixel in our case
     m = [avg_dist/mean_distance 0 -avg_dist/mean_distance*centroid(1);...
         0 avg_dist/mean_distance -avg_dist/mean_distance*centroid(2);...
         0 0 1];
 end
-    
