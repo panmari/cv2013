@@ -173,9 +173,30 @@ R = U W^{-1} V^T
 \end{equation}
 
 \subsubsection{Obtaining depth}
-This algorithm has been first described by Longuet-Higgins \cite{Longuet-Higgins87}. For brevity, we just summarize the most important equations.
-
-
+This algorithm has been first described by Longuet-Higgins \cite{Longuet-Higgins87}. For brevity, we just summarize the most important equations. For
+a point $p$ on the base image and its corresponding point $p'$, we can compute the corresponding 3D point $P$ as
+\begin{equation}
+ P_3 = \frac{(R_1 - p'_1 R_3) \cdot T}{(R_1 - p'_1 R_3) \cdot p}
+\end{equation}
+with $T$ as translation vector and $R_i$ the $i$'th row of the rotation matrix $R$. The other coordinates of $P$ can then be computed as
+\begin{equation}
+ P = (p_1 \cdot P_3, p_2 \cdot P_3, P_3)
+\end{equation}
+\begin{figure}
+\centering
+\begin{subfigure}{0.3\textwidth}
+   \includegraphics[width=\textwidth]{cow_depths}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+   \includegraphics[width=\textwidth]{cow_depths_above}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+   \includegraphics[width=\textwidth]{cow_depths_side}
+\end{subfigure}
+\caption{The cows depth reconstructed using 10 percent of the points given.
+The essential matrix was not reconstructed, but computed using the ground
+truths rotation and translation.}
+\end{figure}
 \bibliographystyle{plain}
 \bibliography{Report_2_Stefan_Moser}
 \end{document}
