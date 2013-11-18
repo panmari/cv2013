@@ -124,6 +124,23 @@ In the same way, the epipolar line for a given point $p'$ of the other image can
 \begin{equation}
 	e' = F^Tp'
 \end{equation} 
+\begin{figure}
+\centering
+\begin{subfigure}{0.49\textwidth}
+   \includegraphics[width=\textwidth]{corridor_epipolar_line}
+   \caption{Point chosen on left image}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+   \includegraphics[width=\textwidth]{corridor_epipolar_line_r}
+   \caption{Epipolar line on right image}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+   \includegraphics[width=\textwidth]{corridor_epipole}
+   \caption{Epipole}
+\end{subfigure}
+\caption{The estimation of an epipolar line and epipole 
+on the corridor scene. For estimating the fundamental matrix, 9 points were given.}
+\end{figure}
 
 \subsubsection{Computing the epipoles}
 We know that the epipoles lie in the null space of $F$ respectively $F'$. For
