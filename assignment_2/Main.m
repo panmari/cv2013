@@ -1,5 +1,5 @@
 
-scene = 'tsukuba'; % either tsukuba or rock;
+scene = 'corridor'; % either tsukuba or rock;
 img_left = imread(['Stereo Pairs/' scene '-l.tiff']);
 img_right = imread(['Stereo Pairs/' scene '-r.tiff']);
  %% let user specify corresponding points   
@@ -15,16 +15,16 @@ end
 sprintf('Mean: %f, var: %f', mean(s), var(s))
 %% compute epipolar lines
 point = [108, 150]; %on left img (base)
+[width, height] = size(img_right);
 imshow(img_left)
 hold on
 plot(point(1), point(2), 'or')
 l = F*[point ,1]'; 
-x1 = -l(3)/l(1);
-y2 = -l(3)/l(2);
+xlims = [-l(3)/l(1), 0, (-l(3)-height*l(2))/l(1), width];
+ylims = [0, -l(3)/l(2), height, (-l(3)-width*l(1))/l(2)];
 figure, imshow(img_right)
 hold on
-[width, height] = size(img_right);
-plot([x1, 0], [0, y2], 'r')
+plot(xlims, ylims, 'r')
 %% compute epipoles
 epipole_l = null(F); 
 epipole_r = null(F'); 
