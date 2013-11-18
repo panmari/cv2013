@@ -5,9 +5,9 @@ matched = fscanf(fid, '%d  %d  %d  %d', [4, inf]);
 fclose(fid);
 
 % only use a selection of matches
-percentage = 0.1; % percentage of points used can be specified here
+percentage = 1; % percentage of points used can be specified here
 RandStream.setGlobalStream(RandStream('mcg16807','Seed',0));
-selection = rand(length(matched),1) <= 100/percentage;
+selection = rand(length(matched),1) <= percentage/100;
 sprintf('Using %d samples', sum(selection))
 right = matched(1:2, selection)';
 left = matched(3:4, selection)';
@@ -28,9 +28,9 @@ K =  [  -83.33333     0.00000   250.00000;
  gt_E = [0.92848  -0.12930   0.34815;
    0.00000   0.93744   0.34815;
   -0.37139  -0.32325   0.87039 ];
-gt_E =  [0 -5 2;
+gt_E = gt_E * [0 -5 2;
                 5 0 -2;
-                -2 2 0] * gt_E;
+                -2 2 0];
                
 %% Estimate R, T via SVD
 [U, D, V] = svd(E);

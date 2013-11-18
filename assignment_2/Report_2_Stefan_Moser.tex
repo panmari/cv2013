@@ -48,9 +48,12 @@
 
 \section{Binocular Stereo (Due on 18/11/2013)}
 
-In this assignment, we retrieve the fundamental matrix of an image pair by using the normalized 8-Point-Algorithm, as described by Richard Hartley \cite{601246}. We show our results by drawing epipolar lines and the epipole for arbitrary points on various scenes. Further, we estimate the essential matrix given the intrinsic parameters of a camera. yadayada
+In this assignment, we take a closer look at the
+ the normalized 8-Point-Algorithm, as described by Richard Hartley \cite{601246}.
 
 \subsection{Epipolar line estimation}
+
+We let the user choose at least 8 corresponding points, then use this information to compute the fundamental matrix and draw epipolar lines.
 
 \subsubsection{Normalizing points}
 
@@ -109,7 +112,7 @@ To obtain our final fundamental matrix $F$, we remove the normalization introduc
    F = M_{p'}^ T \hat{F}_{r2} M_p
    \end{equation}
    
-\subsection{Drawing epipolar lines}
+\subsubsection{Drawing epipolar lines}
 To draw the epipolar line $e$ corresponding to the point $p$ on the base image, we simply compute
 \begin{equation}
 	e = F p
@@ -121,13 +124,52 @@ In the same way, the epipolar line for a given point $p'$ of the other image can
 	e' = F^Tp'
 \end{equation} 
 
-\subsection{Computing the epipoles}
+\subsubsection{Computing the epipoles}
 We know that the epipoles lie in the null space of $F$ respectively $F'$. For
 obtaining them, we can simply use the matlab function \emph{null} and scale 
 the result to image coordinates by scaling it in such a way that 
 the z-coordinate is one.
  
 \subsection{Model reconstruction}
+This time, the corresponding points are not given as user input, but
+read out from a file. We take an arbitrary large subset of them 
+(larger than 8) to compute the fundamental
+matrix and further the essential matrix. Then we estimate the depth of these points.
+
+\subsubsection{Computing the essential matrix}
+We retrieve the fundamental matrix $F$ as described in the section before. To
+retrieve the essential matrix, we need to use the cameras intrinsic parameters $K$ respectively $K'$ for the secondary view:
+\begin{align}
+	 F &= K'^{-T} E K^{-1} \\
+	\Longleftrightarrow E &= K'^T F K
+\end{align}
+For our computation, we had $K = K'$ given. 
+\subsubsection{Estimate the rotation and translation}
+
+From the slides we know, that the essential matrix consists of a translation $T_\times$ (expressed as skew symmetric matrix) and a rotation $R$:
+\begin{equation}
+	E = T_\times R
+\end{equation}
+To split E into these two parts, we can use the SVD of $E$, which gives us
+\begin{equation}
+	E = UDV^T
+\end{equation}
+If we define now
+\begin{equation}
+ W = \begin{pmatrix}
+ 	0 & -1 & 0 \\
+ 	1 & 0 & 0 \\
+ 	0 & 0 & 1
+ \end{pmatrix}
+\end{equation}
+So we can easily derive the translation
+\begin{equation}
+T_\times = V W D V^T
+\end{equation}
+and the rotation
+\begin{equation}
+R = U W^{-1} V^T
+\end{equation}
 \bibliographystyle{simple}
 \bibliography{Report_2_Stefan_Moser}
 \end{document}
