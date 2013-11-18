@@ -14,7 +14,7 @@ for i=(1:8)
     s = [s, [right(i,:), 1]*F*[left(i,:),1]'];
 end
 sprintf('Mean: %f, var: %f', mean(s), var(s))
-%% compute epipolar lines for right
+%% compute and show epipolar lines for right
 hold off
 [width, height] = size(img_right);
 imshow(img_left);
@@ -36,7 +36,7 @@ plot(epipole_r(1), epipole_r(2), 'om');
 sprintf('Epipole on right image:')
 disp(epipole_r);
 
-%% compute epipolar lines for left
+%% compute and show epipolar lines for left
 hold off
 [width, height] = size(img_left);
 imshow(img_right);

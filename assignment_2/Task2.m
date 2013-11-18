@@ -42,7 +42,7 @@ Tl = [ 0 -5 2
       -2 0 0 ];
 gt_E = Rl * Tl;
 %E = gt_E;
-%% Estimate R, T via SVD
+%% Estimate R, T via SVD (works when using gt)
 [U, D, V] = svd(E);
 W = [0 -1 0;
       1 0 0 ;
