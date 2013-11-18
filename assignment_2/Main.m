@@ -8,11 +8,11 @@ img_right = imread(['Stereo Pairs/' scene '-r.tiff']);
 %% Left is base image
 F = getFundamentalMatrix(left, right);
 % Verify F, should be zero (or close to)
-s = 0;
+s = [];
 for i=(1:8)
-    s = s + [left(i,:), 1]*F*[right(i,:),1]';
+    s = [s, [right(i,:), 1]*F*[left(i,:),1]'];
 end
-disp (s/8)
+sprintf('Mean: %f, var: %f', mean(s), var(s))
 %% compute epipolar lines
 point = [108, 150]; %on left img (base)
 imshow(img_left)
@@ -53,7 +53,7 @@ sprintf('Rank: %d', rank(F))
 K =  [  -83.33333     0.00000   250.00000;
      0.00000   -83.33333   250.00000;
      0.00000     0.00000     1.00000];
- E = inv(K')*F;
+ E = F*K;
  sprintf('Essential Matrix:')
  disp(E)
  %% Estimate R, T via SVD
@@ -63,6 +63,7 @@ K =  [  -83.33333     0.00000   250.00000;
      0 0 1; ];
  trans = V*W*D*V';
  rot = U*inv(W)*V';
+ alt_trans = V * [ 0 1 0; -1 0 0; 0 0 0] * V';
  %% TODO: reconstrucht 3D points
  
  %% TODO: show reconstructed point cloud
