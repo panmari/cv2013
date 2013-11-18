@@ -1,12 +1,20 @@
 %% Compute fundamental matrix of cow image
 % just some points copied from Matched point set.rtf
 fid = fopen('Matched Points/matches', 'r');
-fscanf(fid, '%d  %d  %d  %d', [4, inf]);
-%TODO: only use a selection of matches
-right = matched(:, 1:2);
-left = matched(:, 3:4);
+matched = fscanf(fid, '%d  %d  %d  %d', [4, inf]);
+fclose(fid);
+
+% only use a selection of matches
+percentage = 0.1; % percentage of points used can be specified here
+RandStream.setGlobalStream(RandStream('mcg16807','Seed',0));
+selection = rand(length(matched),1) <= 100/percentage;
+sprintf('Using %d samples', sum(selection))
+right = matched(1:2, selection)';
+left = matched(3:4, selection)';
+
 F = getFundamentalMatrix(left, right);
-sprintf('Rank: %d', rank(F))
+sprintf('Fundamental Matrix with rank %d:', rank(F))
+disp(F);
 %% Compute essential matrix of cow using intrinsic parameters
 % F = inv(K') E inv(K)
 % K taken from file
@@ -42,6 +50,6 @@ for i=1:length(left)
 end
 left_xyz = [left'; z];
 %% show reconstructed point cloud
-plot3(left_xyz(1,:), left_xyz(2,:), left_xyz(3,:))
+scatter3(left_xyz(1,:), left_xyz(2,:), left_xyz(3,:), '.')
  
  

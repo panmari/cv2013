@@ -7,6 +7,7 @@ img_right = imread(['Stereo Pairs/' scene '-r.tiff']);
 
 %% Left is base image
 F = getFundamentalMatrix(left, right);
+disp(F);
 % Verify F, should be zero (or close to)
 s = [];
 for i=(1:8)
