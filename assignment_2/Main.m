@@ -13,10 +13,11 @@ for i=(1:8)
     s = [s, [right(i,:), 1]*F*[left(i,:),1]'];
 end
 sprintf('Mean: %f, var: %f', mean(s), var(s))
-%% compute epipolar lines
-point = [108, 150]; %on left img (base)
+%% compute epipolar lines for right
+hold off
 [width, height] = size(img_right);
-imshow(img_left)
+imshow(img_left);
+point = ginput(1); %[108, 150]; %on left img (base)
 hold on
 plot(point(1), point(2), 'or')
 l = F*[point ,1]'; 
@@ -25,10 +26,35 @@ ylims = [0, -l(3)/l(2), height, (-l(3)-width*l(1))/l(2)];
 figure, imshow(img_right)
 hold on
 plot(xlims, ylims, 'r')
-%% compute epipoles
-epipole_l = null(F); 
-epipole_r = null(F'); 
 
+%% compute epipole right
+% as intersection between two epipolar lines
+epipole_r = null(F);
+epipole_r = epipole_r/epipole_r(3);
+plot(epipole_r(1), epipole_r(2), 'om');
+sprintf('Epipole on right image:')
+disp(epipole_r);
+
+%% compute epipolar lines for left
+hold off
+[width, height] = size(img_left);
+imshow(img_right);
+point = ginput(1); %[108, 150]; %on left img (base)
+hold on
+plot(point(1), point(2), 'or')
+l = F'*[point ,1]'; 
+xlims = [-l(3)/l(1), 0, (-l(3)-height*l(2))/l(1), width];
+ylims = [0, -l(3)/l(2), height, (-l(3)-width*l(1))/l(2)];
+figure, imshow(img_left)
+hold on
+plot(xlims, ylims, 'r')
+%% compute epipole right
+% as intersection between two epipolar lines
+epipole_l = null(F');
+epipole_l = epipole_l/epipole_l(3);
+plot(epipole_l(1), epipole_l(2), 'om');
+sprintf('Epipole on left image:')
+disp(epipole_l);
 
 %% Compute fundamental matrix of cow image
 % just some points copied from Matched point set.rtf
@@ -48,19 +74,19 @@ right = matchedPoints(:, 3:4);
 F = getFundamentalMatrix(left, right);
 sprintf('Rank: %d', rank(F))
 %% Compute essential matrix of cow using intrinsic parameters
-% F = K' E inv(K)
-% K taken from file, K of inital view is assumed to be id
+% F = inv(K') E inv(K)
+% K taken from file
 K =  [  -83.33333     0.00000   250.00000;
      0.00000   -83.33333   250.00000;
      0.00000     0.00000     1.00000];
- E = F*K;
+ E = K'*F*K;
  sprintf('Essential Matrix:')
  disp(E)
  %% Estimate R, T via SVD
  [U, D, V] = svd(E);
  W = [0 -1 0;
-     1 0 0 ;
-     0 0 1; ];
+      1 0 0 ;
+      0 0 1 ; ];
  trans = V*W*D*V';
  rot = U*inv(W)*V';
  alt_trans = V * [ 0 1 0; -1 0 0; 0 0 0] * V';

@@ -108,6 +108,25 @@ To obtain our final fundamental matrix $F$, we remove the normalization introduc
    \begin{equation}
    F = M_{p'}^ T \hat{F}_{r2} M_p
    \end{equation}
+   
+\subsection{Drawing epipolar lines}
+To draw the epipolar line $e$ corresponding to the point $p$ on the base image, we simply compute
+\begin{equation}
+	e = F p
+\end{equation}
+$e$ can then be used to extrapolate image coordinates, through which a line then can be matched. 
+To cover every edge case, I extrapolated four points: $x_0 = 0, y_1 = 0, x_2 = w, y_3 = h$ (with $h$ as image height and $w$ as width). 
+In the same way, the epipolar line for a given point $p'$ of the other image can be computed as
+\begin{equation}
+	e' = F^Tp'
+\end{equation} 
+
+\subsection{Computing the epipoles}
+We know that the epipoles lie in the null space of $F$ respectively $F'$. For
+obtaining them, we can simply use the matlab function \emph{null} and scale 
+the result to image coordinates by scaling it in such a way that 
+the z-coordinate is one.
+ 
 \subsection{Model reconstruction}
 \bibliographystyle{simple}
 \bibliography{Report_2_Stefan_Moser}
