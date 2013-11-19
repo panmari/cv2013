@@ -120,7 +120,7 @@ To draw the epipolar line $e$ corresponding to the point $p$ on the base image, 
 \end{equation}
 $e$ can then be used to extrapolate image coordinates, through which a line then can be matched. 
 To cover every edge case, I extrapolated four points: $x_0 = 0, y_1 = 0, x_2 = w, y_3 = h$ (with $h$ as image height and $w$ as width). 
-In the same way, the epipolar line for a given point $p'$ of the other image can be computed as
+In the same way, the epipolar line for a given point $p'$ on the secondary image can be computed as
 \begin{equation}
 	e' = F^Tp'
 \end{equation} 
@@ -140,7 +140,8 @@ In the same way, the epipolar line for a given point $p'$ of the other image can
    \caption{Epipole}
 \end{subfigure}
 \caption{The estimation of an epipolar line and epipole 
-on the corridor scene. For estimating the fundamental matrix, 9 points were given.}
+on the corridor scene. 
+For the estimation of the fundamental matrix, 9 points were given.}
 \label{fig:corridor}
 \end{figure}
 
@@ -166,7 +167,7 @@ retrieve the essential matrix, we need to use the cameras intrinsic parameters $
 For our computation, we had $K = K'$ given. 
 \subsubsection{Estimate the rotation and translation}
 
-From the slides we know, that the essential matrix consists of a translation $T_\times$ (expressed as skew symmetric matrix) and a rotation $R$:
+From the slides we know that the essential matrix consists of a translation $T_\times$ (expressed as skew symmetric matrix) and a rotation $R$:
 \begin{equation}
 	E = T_\times R
 \end{equation}
@@ -182,7 +183,7 @@ If we define now
  	0 & 0 & 1
  \end{pmatrix}
 \end{equation}
-So we can easily derive the translation
+we can easily derive the translation
 \begin{equation}
 T_\times = V W D V^T
 \end{equation}
@@ -220,14 +221,16 @@ truths rotation and translation.}
 The results obtained are visible in figure \ref{fig:cow}.
 \subsection{Discussion}
 While this algorithm is very simple and easy to implement, it is also very sensitive
-to noise. If we added some noise to the correspondences, the results from figure \ref{fig:corridor} would look completely different, as visible in \ref{fig:corridor_noisy}.
+to noise. If we added some noise to the correspondences, the results from figure \ref{fig:corridor} would look completely different, 
+which can be seen in figure \ref{fig:corridor_noisy}.
 \begin{figure}[h]
 \centering
    \includegraphics[width=\textwidth]{corridor_eline_noisy}
-\caption{The points chosen on the left side had some gaussian noise 
-($\mu = 0, \sigma = 3$) added. The point chosen was the same as in figure 
+\caption{The points chosen on the left image had some gaussian noise 
+($\mu = 0, \sigma = 3$) added. The epipole drawn is for
+the same point as shown in figure 
 \ref{fig:corridor_point},
- but the results are completely off, with the epipole not even
+ but the result is completely off, with the epipole not even
 on the image anymore.}
 \label{fig:corridor_noisy}
 \end{figure}
@@ -237,10 +240,16 @@ on the image anymore.}
 \item Iteratively minimizing the geometric error \cite{Hartley2004}, with various norms
 \item Iteratively minimizing the algebraic error \cite{Hartley2004}, with various norms
 \end{itemize}
-It is a widely accepted fact, that the unnormalized 8-point algorithm performs much worse
-than any other due to numerical instability. Other iterative algorithms perform better in the presence of noise. Omid Aghazadeh is offering some code online
+It is a widely accepted fact that the unnormalized 8-point algorithm performs much worse
+than any other due to numerical instability. 
+Other iterative algorithms perform better in the presence of noise. They 
+also, as with any other iterative algorithm, make it easier to handle large amounts of matched points: When a
+desired bound is reached, the algorithm can just stop and 
+return the current result. The 8-point algorithm has to
+solve the whole linear system before it can produce a result.
+    Omid Aghazadeh is offering some code online
 \footnote{http://www.mathworks.ch/matlabcentral/fileexchange/27541-fundamental-matrix-computation}  that can be used to 
-compare the algorithms mentioned under various noise conditions. Figure \ref{fig:comparison} 
+compare the performance of the algorithms mentioned under various noise conditions. Figure \ref{fig:comparison} 
 was compiled using his code.
 \begin{figure}
 \centering
@@ -262,8 +271,8 @@ was compiled using his code.
 \end{subfigure}
 \caption{Comparison of various different algorithms for computing the 
 fundamental matrix. Especially with higher noise energy, the normalized 8-point
-algorithm falls behind in performance.}
-\label{fig:cow}
+algorithm falls behind in performance for almost any amount of points given.}
+\label{fig:comparison}
 \end{figure}
 \bibliographystyle{plain}
 \bibliography{Report_2_Stefan_Moser}
