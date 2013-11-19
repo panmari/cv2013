@@ -34,17 +34,10 @@ plot(right(:,1), right(:,2), 'xr');
 K =  [  -83.33333     0.00000   250.00000;
      0.00000   -83.33333   250.00000;
      0.00000     0.00000     1.00000];
- E = K'*F*K;
- sprintf('Essential Matrix:')
- disp(E)
- % ground truth of E
- gt_rot = [0.92848  -0.12930   0.34815;
-   0.00000   0.93744   0.34815;
-  -0.37139  -0.32325   0.87039 ];
-gt_trans =     [0 -5 2;
-               5  0 -2;
-               -2 2 0];
-gt_E = gt_rot * gt_trans; % wikipedia definition
+E = K'*F*K;
+sprintf('Essential Matrix:')
+disp(E)
+E = F;
 %gt_E = gt_trans * gt_rot; % slides definition
 %% GROUND TRUTH, ALL THE THINGS! todo: fix my essential matrix
 Rl = [ 1.00000   0.00000   0.00000
