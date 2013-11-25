@@ -2,8 +2,8 @@
 % and to demonstrate loading a data file.
 
 
-framesdir = '/v/filer4b/v26q010/pset4data/frames/';
-siftdir = '/v/filer4b/v26q010/pset4data/sift/';
+framesdir = 'images/';
+siftdir = 'sift/';
 
 
 % Get a list of all the .mat files in that directory.
@@ -69,5 +69,5 @@ for i=1:length(fnames)
     pause;
     
     clear descriptors positions scales orients im
-    
+      
 end
