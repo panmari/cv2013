@@ -39,7 +39,7 @@ for i=1:N
 end
 
 
-
+imshow(im);
 
 hold on;
 for i=1:N
