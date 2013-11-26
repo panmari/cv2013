@@ -12,7 +12,7 @@ fnames = dir([framesdir '/*.png']);
 
 fprintf('reading %d total files...\n', length(fnames));
 for i=1:length(fnames)
-    name = file(i).name;
+    name = fnames(i).name;
     fprintf('Processing %s\n', name);
     imname = [framesdir, name];
     orig_I = imread(imname);
