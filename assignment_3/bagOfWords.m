@@ -26,6 +26,11 @@ for i = 1:length(fnames)
 end
 %% Clustering with k clusters for showing bags
 k = 1500;
-fprintf('Clustering %d words with %d descriptors, this might take some time...', k, length(all_descriptors));
-[centers, assignments] = vl_ikmeans(all_descriptors, k);
-fprintf('Done!');
+fprintf('Clustering %d words with %d descriptors, this might take some time... ', k, length(all_descriptors));
+tic
+% See http://www.vlfeat.org/sandbox/overview/kmeans.html for a description
+% of available algorithms for kmeans
+[centers, assignments, energy] = vl_kmeans(single(all_descriptors), k, ...
+    'Algorithm', 'ANN', 'MaxNumComparisons', ceil(k / 50));
+toc
+fprintf('Done! Energy: %f \n', energy);

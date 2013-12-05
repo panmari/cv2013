@@ -23,10 +23,7 @@ for i = 1:length(fnames)
     img_idxs = [img_idxs, repmat(i, [1 length(descriptors)])];
 end
 %% Clustering with k clusters for showing bags
-k = 1500;
-fprintf('Clustering %d words with %d descriptors, this might take some time...', k, length(all_descriptors));
-[centers, assignments] = vl_ikmeans(all_descriptors, k);
-fprintf('Done!');
+run('bagOfWords');
 %% show words
 for i=randsample(1:k, 2)
     idxs = find(assignments == i);
