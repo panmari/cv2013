@@ -36,7 +36,7 @@ for i=randsample(1:k, 2)
             all_orients(:,j), imgs(:,:,img_idx));
         if subplotpos <= 25
             subplot(5,5,subplotpos);
-            imshow(d);
+            imshow(d, [0 255]);
         end
         subplotpos = subplotpos + 1;
     end
