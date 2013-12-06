@@ -1,5 +1,5 @@
 %% Initialize workspace and select region
-load('sift/twoFrameData.mat')
+load('twoFrameData.mat')
 selected = selectRegion(im1, positions1);
 
 %% Match descriptors on other image

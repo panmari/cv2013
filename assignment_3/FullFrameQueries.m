@@ -9,19 +9,9 @@ for img=1:nrImages
     histograms(:,img) = histc(img_assignments, 1:length(centers));
 end
 %% find closest match
-similarities = [];
-
-for img=1:nrImages
-    if img == queryImg
-        continue;
-    end
-    sim = sum(histograms(:,img).*histograms(:,queryImg))/...
-        (norm(histograms(:,img) * norm(histograms(:,queryImg))));
-    similarities = [similarities; sim img];
-end
-
-similarities = sortrows(similarities);
-similarities = flipud(similarities);
+similarities = computeSimilarities(histograms, histograms(:, queryImg), nrImages);
+% delete query img itself from similarity vector
+similarities(similarities(:,2) == queryImg, :) = [];
 %% show query img and 5 closest matches
 % top left is query
 % others sorted by similarity from left to right and top to bottom.
