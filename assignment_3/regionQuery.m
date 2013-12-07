@@ -1,3 +1,5 @@
+%% Choose query img
+queryImg = 25;
 %% Make bag of words
 %run('bagOfWords')
 %% Assemble histograms (same as in FullFrameQueries)
@@ -5,7 +7,6 @@ nrImages = size(imgs, 3);
 histograms = assembleHistograms(assignments, centers, img_idxs, nrImages);
 
 %% select region, compute bag of words of region
-queryImg = 15;
 positions = all_positions(:, img_idxs == queryImg);
 selected = selectRegion(imgs(:,:,queryImg)/255, positions');
 fprintf('Number of descriptors in region: %d \n', length(selected));
@@ -15,8 +16,19 @@ hist = histc(assignments_region, 1:length(centers));
 
 %% term frequency - inverse document frequency
 hist_all = histc(assignments, 1:length(centers));
-weighted_hist = hist/sum(hist).*log(sum(hist_all)./hist_all);
-%plot(weighted_hist);           % show weighted hist for debugging
+%weighted_hist = hist.*log(sum(hist_all)./hist_all); %/sum(hist) % would normalize
+weighted_hist = hist;
+%% show histograms, mainly for debugging
+% top: unweighted region
+% middle: of all images
+% bottom: weighted region
+figure
+subplot(3,1, 1);
+bar(hist); xlim([1 1500]);
+subplot(3,1, 2);
+bar(hist_all); xlim([1 1500]);
+subplot(3,1, 3);
+bar(weighted_hist); xlim([1 1500]);          
 
 %% find images that match weighted hist closest
 similarities = computeSimilarities(histograms, weighted_hist', nrImages);
