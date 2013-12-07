@@ -1,5 +1,5 @@
 % This script reads in all images, does compile words, and bag of words
-
+fast = false;
 %% Initialize workspace and vl
 run('vlfeat-0.9.17/toolbox/vl_setup')
 %% Concatenate descriptors of all images
@@ -30,7 +30,11 @@ fprintf('Clustering %d words with %d descriptors, this might take some time... '
 tic
 % See http://www.vlfeat.org/sandbox/overview/kmeans.html for a description
 % of available algorithms for kmeans
-[centers, assignments, energy] = vl_kmeans(single(all_descriptors), k, ...
-    'Algorithm', 'ANN', 'MaxNumComparisons', ceil(k / 50));
+if fast
+    [centers, assignments, energy] = vl_kmeans(single(all_descriptors), k, ...
+        'Algorithm', 'ANN', 'MaxNumComparisons', ceil(k / 50));
+else
+    [centers, assignments, energy] = vl_kmeans(single(all_descriptors), k);
+end
 toc
 fprintf('Done! Energy: %f \n', energy);
