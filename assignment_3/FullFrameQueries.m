@@ -3,11 +3,7 @@
 %% Do histograms
 nrImages = size(imgs, 3);
 queryImg = 30;
-
-for img=1:nrImages
-    img_assignments = assignments(find(img_idxs == img));
-    histograms(:,img) = histc(img_assignments, 1:length(centers));
-end
+histograms = assembleHistograms(assignments, centers, img_idxs, nrImages);
 %% find closest match
 similarities = computeSimilarities(histograms, histograms(:, queryImg), nrImages);
 % delete query img itself from similarity vector
