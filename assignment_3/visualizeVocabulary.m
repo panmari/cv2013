@@ -27,7 +27,7 @@ run('bagOfWords');
 %% show words
 for i=randsample(1:k, 2)
     idxs = find(assignments == i);
-    figure
+    figure('name', sprintf('Examples for word number %d', i));
     subplotpos = 1;
     for j=idxs
         % find image belonging to idx j
@@ -37,6 +37,8 @@ for i=randsample(1:k, 2)
         if subplotpos <= 25
             subplot(5,5,subplotpos);
             imshow(d, [0 255]);
+            % for showing normalized images
+            % imshow(d, [min(min(d)) max(max(d))]); 
         end
         subplotpos = subplotpos + 1;
     end
