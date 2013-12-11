@@ -194,11 +194,40 @@ method can be seen in figure \ref{fig:full_frame_query}.
   \label{fig:full_frame_query}
 \end{figure}
 \subsection{Region query}
-
+Similar to full frame query, we can also compute the histogram of words of a user 
+selected region and us it in the same way for finding images that contain the 
+selected region. Additionally we can weight the histogram of the selected region
+using term frequency inverse document frequency (tf-idf). This lessens the impact
+of omnipresent words by multiplying the log of the inverse document frequency:
+\begin{equation}
+	p'(w) = p(w) \cdot \log(\frac{|a|}{p_a(w)})
+\end{equation}
+In this equation $p(w)$ is the frequency of the word $w$ in the current frame and $p_a(w)$
+ it's frequency over the whole database. $|a|$ is the number of descriptors in the 
+ whole database. $p'(w)$ is the resulting weighted frequency of $w$.
+ As in the last experiment, we use the normalized scalar product as similarity measure.
+Two examples can be seen in figure \ref{fig:region_qry_fez} and \ref{region_qry_blah}
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.8\textwidth}
+    \includegraphics[width=\textwidth]{region_qry_fez}
+    \subcaption{Descriptors in selected region are marked red on the upper
+    image. The lower three images were determined as the most similar (in order 
+    of similarity).}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.8\textwidth}
+    \includegraphics[width=\textwidth]{region_qry_fez_hist}
+    \subcaption{At the top is the histogram of the selected region, in the middle
+    the histogram over the whole database and at the bottom the histogram weighted
+    with tf-idf.}
+  \end{subfigure}
+\caption{An example for a region query. The fez was selected as region of interest.}
+\label{fig:region_qry_fez}
+\end{figure}
 
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{img_db}
-  \caption{All images used for computing the results (except from section \ref{sec:raw}).}
+  \caption{All images used for computing the results shown (except from section \ref{sec:raw}).}
 \end{figure}
 \end{document}
