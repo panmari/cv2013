@@ -55,10 +55,11 @@ one provided with the assignment (Two frames from one scene of an episode of the
 see twoFrameData.mat) and 33 frames extracted from various scenes of one episode of the
 British TV series 'Doctor Who' (see the folder /images provided with the code). The
 frames were extracted using VLC media player \footnote{\url{http://www.videolan.org/vlc/}}.
+See the appendix if you want to inspect the whole data set.
 
 \subsection{Experiments}
 \subsubsection{Raw descriptor matching}
-
+\label{sec:raw}
 For this experiment, the user selects a region of interest on one frame. Every 
 descriptor contained in this region is then mapped to a descriptor in the second frame.
 The assumption is, that the descriptors found on an object only vary negligible along
@@ -188,7 +189,16 @@ method can be seen in figure \ref{fig:full_frame_query}.
   \end{subfigure}
   \caption{An example for a full frame query with results sorted by similarity. 
   The results are convincing: Frames that contain
-  the same actors (from the same scene) found. Not even the subtitles confuse the algorithm.}
+  the same actors from the same scene are found. 
+  Not even the subtitles confuse the algorithm.}
   \label{fig:full_frame_query}
+\end{figure}
+\subsection{Region query}
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{img_db}
+  \caption{All images used for computing the results (except from section \ref{sec:raw}).}
 \end{figure}
 \end{document}
