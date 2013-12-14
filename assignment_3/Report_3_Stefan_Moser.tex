@@ -55,7 +55,8 @@ one provided with the assignment (Two frames from one scene of an episode of the
 see twoFrameData.mat) and 33 frames extracted from various scenes of one episode of the
 British TV series 'Doctor Who' (see the folder /images provided with the code). The
 frames were extracted using VLC media player \footnote{\url{http://www.videolan.org/vlc/}}.
-See the appendix if you want to inspect the whole data set.
+The computation of the SIFT descriptors and the clustering were done with the VLFeat\footnote{\url{http://www.vlfeat.org/}} open source library.
+See Figure \ref{fig:db} at the end of the report for seeing the whole data set.
 
 \subsection{Experiments}
 \subsubsection{Raw descriptor matching}
@@ -64,10 +65,10 @@ For this experiment, the user selects a region of interest on one frame. Every
 descriptor contained in this region is then mapped to a descriptor in the second frame.
 The assumption is, that the descriptors found on an object only vary negligible along
 multiple frames. This does work reasonably well with my implementation, as can be seen
-on figure \ref{fig:raw_desc_match}. My algorithm does not prevent two descriptors from
+on Figure \ref{fig:raw_desc_match}. My algorithm does not prevent two descriptors from
 frame 1 being matched to the same descriptor on frame 2, which would be arguably more
 valid. This behavior was chosen for algorithmic simplicity and runtime performance. 
-This simple algorithm is very easy to throw off as can be seen in figure \ref{fig:raw_fail}.
+This simple algorithm is very easy to throw off as can be seen in Figure \ref{fig:raw_fail}.
 \begin{figure}
   \centering
   \begin{subfigure}[b]{0.7\textwidth}
@@ -109,7 +110,7 @@ For this example we compile a visual vocabulary: We compute the SIFT features of
 frame in our database, concatenate all of them and apply clustering via the kmeans 
 algorithm. All SIFT patches assigned to the same center (or 'word') can then be 
 seen as representation of this word. For my data set, a histogram of all assignments can be
-seen in figure \ref{fig:all_hist}. Some sample representations are visualized in figure 
+seen in Figure \ref{fig:all_hist}. Some sample representations are visualized in Figure 
 \ref{fig:words}. As my data set contains images that have a large portion covered with sky,
 which consists of mainly uniform patches, all descriptors in these regions are mapped to
 the same word, which is apparently number 65. The similarity of the patches for the two 
@@ -117,12 +118,12 @@ other words is not as easy to see by human eyes. They do however share similar g
 directions in similar subregions, which is essentially what is expressed by SIFT. 
 
 Contrary to intuition, we can also spot several mostly uniform patches in word 949
-(figure \ref{fig:949}). When normalizing these patches however they show similar 
+(Figure \ref{fig:949}). When normalizing these patches however they show similar 
 gradient directions as the other representatives of word 949. They are just too weak to see
 by eye. Since SIFT does not consider the magnitude of the gradient but only its direction,
 they show up under the same word. We can however adapt SIFT to either ignore every 
 gradient that has a magnitude below a threshold or classify these below a threshold as 
-special null-direction. For computing the results shown in figure \ref{fig:words} I 
+special null-direction. For computing the results shown in Figure \ref{fig:words} I 
 choose the former behavior with 10 as threshold. 
 Without this tweak, there would be even more mostly uniform patches scattered in other words,
 which does not serve our purpose.
@@ -150,7 +151,7 @@ which does not serve our purpose.
     \label{fig:949}
   \end{subfigure}
 \caption{Three different words their first 25 representatives. Word 65 from subfigure \subref{fig:65}
-is the most common word, as can be seen in the histogram in figure \ref{fig:all_hist}. It contains 
+is the most common word, as can be seen in the histogram in Figure \ref{fig:all_hist}. It contains 
 mostly uniform patches. The other two words are not as easy described.}
 \label{fig:words}
 \end{figure}
@@ -160,7 +161,7 @@ in the same quantity on frame 1 as on frame 2, we assume them to contain the sam
 and to be similar. This can be computed by simply computing the normalized
  scalar product of the histograms of our 
 query frame with each other frame and pick the highest values. Results obtained with this
-method can be seen in figure \ref{fig:full_frame_query}. 
+method can be seen in Figure \ref{fig:full_frame_query}. 
 \begin{figure}
   \centering
   \begin{subfigure}[b]{0.32\textwidth}
@@ -206,14 +207,14 @@ In this equation $p(w)$ is the frequency of the word $w$ in the current frame an
  it's frequency over the whole database. $|a|$ is the number of descriptors in the 
  whole database. $p'(w)$ is the resulting weighted frequency of $w$.
  As in the last experiment, we use the normalized scalar product as similarity measure.
-Two examples can be seen in figure \ref{fig:region_qry_fez} and \ref{region_qry_blah}
+Two examples can be seen in Figure \ref{fig:region_qry_fez} and \ref{fig:region_qry_souffle}
 \begin{figure}
   \centering
   \begin{subfigure}[b]{0.8\textwidth}
     \includegraphics[width=\textwidth]{region_qry_fez}
     \subcaption{Descriptors in selected region are marked red on the upper
     image. The lower three images were determined as the most similar (in order 
-    of similarity).}
+    of similarity). The fez does indeed appear on the first and the third image.}
   \end{subfigure}
   \begin{subfigure}[b]{0.8\textwidth}
     \includegraphics[width=\textwidth]{region_qry_fez_hist}
@@ -227,7 +228,28 @@ Two examples can be seen in figure \ref{fig:region_qry_fez} and \ref{region_qry_
 
 \begin{figure}
   \centering
+  \begin{subfigure}[b]{0.8\textwidth}
+    \includegraphics[width=\textwidth]{region_qry_souffle}
+    \subcaption{Descriptors in selected region are marked red on the upper
+    image. The lower three images were determined as the most similar (in order 
+    of similarity). While the actress does appear on three other images of the database,
+    even in front view, they are not found. At least the input image does show up.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.8\textwidth}
+    \includegraphics[width=\textwidth]{region_qry_souffle_hist}
+    \subcaption{At the top is the histogram of the selected region, in the middle
+    the histogram over the whole database and at the bottom the histogram weighted
+    with tf-idf.}
+  \end{subfigure}
+\caption{An failure case for a region query. The face of the actress including hair
+ was selected as region of interest.}
+\label{fig:region_qry_souffle}
+\end{figure}
+
+\begin{figure}
+  \centering
   \includegraphics[width=\textwidth]{img_db}
   \caption{All images used for computing the results shown (except from section \ref{sec:raw}).}
+  \label{fig:db}
 \end{figure}
 \end{document}
