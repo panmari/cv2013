@@ -53,21 +53,22 @@ In this assignment we studied how well SIFT descriptors perform when used direct
 for matching and in combination with bag of words. As underlying data set I used the
 one provided with the assignment (Two frames from one scene of an episode of the TV series 'Friends',
 see twoFrameData.mat) and 33 frames extracted from various scenes of one episode of the
-British TV series 'Doctor Who' (see the folder /images provided with the code). The
-frames were extracted using VLC media player \footnote{\url{http://www.videolan.org/vlc/}}.
+British TV series 'Doctor Who' (see the folder /images provided with the code or Figure \ref{fig:db}). The
+frames were extracted using VLC media player\footnote{\url{http://www.videolan.org/vlc/}},
+partly with subtitles.
 The computation of the SIFT descriptors and the clustering were done with the VLFeat\footnote{\url{http://www.vlfeat.org/}} open source library.
-See Figure \ref{fig:db} at the end of the report for seeing the whole data set.
 
 \subsection{Experiments}
 \subsubsection{Raw descriptor matching}
 \label{sec:raw}
 For this experiment, the user selects a region of interest on one frame. Every 
-descriptor contained in this region is then mapped to a descriptor in the second frame.
+descriptor contained in this region is then mapped to a descriptor in a second frame.
 The assumption is, that the descriptors found on an object only vary negligible along
-multiple frames. This does work reasonably well with my implementation, as can be seen
+multiple frames. This does work reasonably well as can be seen
 on Figure \ref{fig:raw_desc_match}. My algorithm does not prevent two descriptors from
-frame 1 being matched to the same descriptor on frame 2, which would be arguably more
-valid. This behavior was chosen for algorithmic simplicity and runtime performance. 
+frame 1 being matched to the same descriptor on frame 2. This behavior was chosen for
+ algorithmic simplicity and runtime performance. Another approach would be to exclude 
+the descriptor from further matching after it was assigned once.
 This simple algorithm is very easy to throw off as can be seen in Figure \ref{fig:raw_fail}.
 \begin{figure}
   \centering
@@ -77,12 +78,11 @@ This simple algorithm is very easy to throw off as can be seen in Figure \ref{fi
   \end{subfigure}
   \begin{subfigure}[b]{0.7\textwidth}
     \includegraphics[width=\textwidth]{raw_desc_matching_all}
-    \subcaption{All matched descriptors on frame 2, mean squared error is 0.325343}
+    \subcaption{All matched descriptors on frame 2. MSE: 0.325343}
   \end{subfigure}
     \begin{subfigure}[b]{0.7\textwidth}    
     \includegraphics[width=\textwidth]{raw_desc_matching_topten}
-    \subcaption{Selection of 10 matches with least error on frame 2, mean squared error
-    is 0.087385}
+    \subcaption{Selection of 10 best matches on frame 2. MSE: 0.087385}
   \end{subfigure}
 \caption{Raw descriptor matching of the provided scene. When displaying all matches,
 the result seems very disappointing. When only including the best matches, most 
@@ -97,7 +97,7 @@ descriptors lie on the initially selected object.}
   \end{subfigure}
   \begin{subfigure}[b]{0.7\textwidth}
     \includegraphics[width=\textwidth]{raw_fail_all}
-    \subcaption{All matched descriptors on frame 2, mean squared error is 0.368444}
+    \subcaption{All matched descriptors on frame 2. MSE: 0.368444}
   \end{subfigure}
 \caption{Another example of raw descriptor matching of the provided scene.
 In this example, the matched descriptors do not lie in the expected region, even though
@@ -107,8 +107,8 @@ the mean square error is close to the one of the first example}
 
 \subsection{Visualizing the visual vocabulary}
 For this example we compile a visual vocabulary: We compute the SIFT features of every 
-frame in our database, concatenate all of them and apply clustering via the kmeans 
-algorithm. All SIFT patches assigned to the same center (or 'word') can then be 
+frame in our database, concatenate all of them and apply clustering via the k-means 
+algorithm. Every SIFT patch assigned to the same center (or 'word') can then be 
 seen as representation of this word. For my data set, a histogram of all assignments can be
 seen in Figure \ref{fig:all_hist}. Some sample representations are visualized in Figure 
 \ref{fig:words}. As my data set contains images that have a large portion covered with sky,
@@ -118,7 +118,7 @@ other words is not as easy to see by human eyes. They do however share similar g
 directions in similar subregions, which is essentially what is expressed by SIFT. 
 
 Contrary to intuition, we can also spot several mostly uniform patches in word 949
-(Figure \ref{fig:949}). When normalizing these patches however they show similar 
+(Figure \ref{fig:949}). When normalizing these patches however, they show similar 
 gradient directions as the other representatives of word 949. They are just too weak to see
 by eye. Since SIFT does not consider the magnitude of the gradient but only its direction,
 they show up under the same word. We can however adapt SIFT to either ignore every 
@@ -131,7 +131,7 @@ which does not serve our purpose.
   \centering
   \includegraphics[width=0.7\textwidth]{hist_all}
   \caption{Histogram of the assignments for all descriptors in database. It becomes 
-  apparent that word 65 is by far most prominent.}
+  apparent that word 65 is by far the most prominent word.}
   \label{fig:all_hist}
 \end{figure}
 \begin{figure}
@@ -207,7 +207,7 @@ In this equation $p(w)$ is the frequency of the word $w$ in the current frame an
  it's frequency over the whole database. $|a|$ is the number of descriptors in the 
  whole database. $p'(w)$ is the resulting weighted frequency of $w$.
  As in the last experiment, we use the normalized scalar product as similarity measure.
-Two examples can be seen in Figure \ref{fig:region_qry_fez} and \ref{fig:region_qry_souffle}
+Two examples can be seen in Figure \ref{fig:region_qry_fez} and \ref{fig:region_qry_souffle}.
 \begin{figure}
   \centering
   \begin{subfigure}[b]{0.8\textwidth}
@@ -241,7 +241,7 @@ Two examples can be seen in Figure \ref{fig:region_qry_fez} and \ref{fig:region_
     the histogram over the whole database and at the bottom the histogram weighted
     with tf-idf.}
   \end{subfigure}
-\caption{An failure case for a region query. The face of the actress including hair
+\caption{A failure case for a region query. The face of the actress including hair
  was selected as region of interest.}
 \label{fig:region_qry_souffle}
 \end{figure}
@@ -249,7 +249,7 @@ Two examples can be seen in Figure \ref{fig:region_qry_fez} and \ref{fig:region_
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{img_db}
-  \caption{All images used for computing the results shown (except from section \ref{sec:raw}).}
+  \caption{All images used for computing the results (except from section \ref{sec:raw}).}
   \label{fig:db}
 \end{figure}
 \end{document}

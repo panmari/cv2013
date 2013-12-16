@@ -1,5 +1,5 @@
 % This script reads in all images, does compile words, and bag of words
-fast = false;
+fast = true;
 %% Initialize workspace and vl
 run('vlfeat-0.9.17/toolbox/vl_setup')
 %% Concatenate descriptors of all images

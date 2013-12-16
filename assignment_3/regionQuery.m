@@ -1,5 +1,5 @@
 %% Choose query img
-queryImg = 15;
+queryImg = 24;
 %% Make bag of words
 %run('bagOfWords')
 %% Assemble histograms (same as in FullFrameQueries)
@@ -18,7 +18,7 @@ hist = histc(assignments_region, 1:length(centers));
 %% term frequency - inverse document frequency
 hist_all = histc(assignments, 1:length(centers));
 weighted_hist = hist.*log(sum(hist_all)./hist_all); %/sum(hist); % would normalize
-%weighted_hist = hist;
+
 %% show histograms, mainly for debugging
 % top: unweighted region
 % middle: of all images
@@ -35,7 +35,7 @@ bar(weighted_hist); xlim([1 1500]);
 similarities = computeSimilarities(histograms, weighted_hist', nrImages);
 
 %% Show 3 images with closest histograms
-subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
+%subplot = @(m,n,p) subtightplot (m, n, p, [0.01 0.05], [0.1 0.01], [0.1 0.01]);
 figure
 subplot(2,3, 2);
 imshow(imgs(:,:,queryImg), [0 255], 'border', 'tight');
