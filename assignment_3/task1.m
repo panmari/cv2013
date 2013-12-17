@@ -1,3 +1,8 @@
+% This file dumps the sift descriptors of every image of the 
+% folder /images into a matlab workspace with the same name in the 
+% folder /sift
+% Run this before trying any other scripts
+
 %% Setup vlfeat
 run('vlfeat-0.9.17/toolbox/vl_setup')
 
